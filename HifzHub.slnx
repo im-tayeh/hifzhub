@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HifzHub.Api/HifzHub.Api.csproj" />
+    <Project Path="src/HifzHub.Application/HifzHub.Application.csproj" />
+    <Project Path="src/HifzHub.Domain/HifzHub.Domain.csproj" />
+    <Project Path="src/HifzHub.Infrastructure/HifzHub.Infrastructure.csproj" />
+  </Folder>
+</Solution>
