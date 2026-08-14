@@ -5,4 +5,7 @@
     <Project Path="src/HifzHub.Domain/HifzHub.Domain.csproj" />
     <Project Path="src/HifzHub.Infrastructure/HifzHub.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HifzHub.UnitTests/HifzHub.UnitTests.csproj" />
+  </Folder>
 </Solution>

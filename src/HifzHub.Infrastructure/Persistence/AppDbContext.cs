@@ -1,9 +1,11 @@
-﻿using HifzHub.Domain.Entities;
+﻿using HifzHub.Application.Abstractions;
+using HifzHub.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HifzHub.Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options,
+    ITenantContext tenant) : DbContext(options), IAppDbContext
 {
     public DbSet<Center> Centers => Set<Center>();
     public DbSet<User> Users => Set<User>();
@@ -13,5 +15,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        modelBuilder.Entity<User>().HasQueryFilter(u =>
+            tenant.CenterId == null || u.CenterId == tenant.CenterId);
     }
 }
