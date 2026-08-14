@@ -1,0 +1,17 @@
+﻿using HifzHub.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace HifzHub.Infrastructure.Persistence;
+
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+{
+    public DbSet<Center> Centers => Set<Center>();
+    public DbSet<User> Users => Set<User>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    }
+}
