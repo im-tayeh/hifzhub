@@ -1,13 +1,15 @@
 using HifzHub.Api;
-using HifzHub.Application.Abstractions;
+using HifzHub.Application;
 using HifzHub.Infrastructure;
 using HifzHub.Infrastructure.Persistence;
 using Scalar.AspNetCore;
+using HifzHub.Application.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApiServices();
+builder.Services.AddApplication();
 
 var app = builder.Build();
 

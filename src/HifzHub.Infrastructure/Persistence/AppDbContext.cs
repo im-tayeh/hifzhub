@@ -10,6 +10,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     public DbSet<Center> Centers => Set<Center>();
     public DbSet<User> Users => Set<User>();
     public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<Stage> Stages => Set<Stage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,5 +19,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
         modelBuilder.Entity<User>().HasQueryFilter(u =>
             tenant.CenterId == null || u.CenterId == tenant.CenterId);
+
+        modelBuilder.Entity<Stage>().HasQueryFilter(s =>
+            tenant.CenterId == null || s.CenterId == tenant.CenterId);
     }
 }

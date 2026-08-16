@@ -23,7 +23,6 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
-        services.AddScoped<LoginHandler>();
 
         var jwt = configuration.GetSection("Jwt").Get<JwtSettings>()!;
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
