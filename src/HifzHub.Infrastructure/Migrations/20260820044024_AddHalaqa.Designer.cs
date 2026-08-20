@@ -3,6 +3,7 @@ using System;
 using HifzHub.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HifzHub.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260820044024_AddHalaqa")]
+    partial class AddHalaqa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,65 +56,6 @@ namespace HifzHub.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Centers");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.Course", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CenterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<Guid?>("ProgramId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CenterId");
-
-                    b.HasIndex("ProgramId");
-
-                    b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.CourseEnrollment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CenterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CourseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CenterId");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("CourseId", "StudentId")
-                        .IsUnique();
-
-                    b.ToTable("CourseEnrollments");
                 });
 
             modelBuilder.Entity("HifzHub.Domain.Entities.Halaqa", b =>
@@ -168,79 +112,6 @@ namespace HifzHub.Infrastructure.Migrations
                     b.HasIndex("CenterId");
 
                     b.ToTable("Stages");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.Student", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CenterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateOnly?>("DateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<Guid?>("HalaqaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsOrphan")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("NationalId")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("WhatsApp")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CenterId");
-
-                    b.HasIndex("HalaqaId");
-
-                    b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.TrainingProgram", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CenterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CenterId");
-
-                    b.ToTable("Programs");
                 });
 
             modelBuilder.Entity("HifzHub.Domain.Entities.User", b =>
@@ -316,43 +187,6 @@ namespace HifzHub.Infrastructure.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("HifzHub.Domain.Entities.Course", b =>
-                {
-                    b.HasOne("HifzHub.Domain.Entities.Center", "Center")
-                        .WithMany()
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HifzHub.Domain.Entities.TrainingProgram", "Program")
-                        .WithMany()
-                        .HasForeignKey("ProgramId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Center");
-
-                    b.Navigation("Program");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.CourseEnrollment", b =>
-                {
-                    b.HasOne("HifzHub.Domain.Entities.Course", "Course")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HifzHub.Domain.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("HifzHub.Domain.Entities.Halaqa", b =>
                 {
                     b.HasOne("HifzHub.Domain.Entities.Center", "Center")
@@ -373,35 +207,6 @@ namespace HifzHub.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("HifzHub.Domain.Entities.Stage", b =>
-                {
-                    b.HasOne("HifzHub.Domain.Entities.Center", "Center")
-                        .WithMany()
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Center");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.Student", b =>
-                {
-                    b.HasOne("HifzHub.Domain.Entities.Center", "Center")
-                        .WithMany()
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HifzHub.Domain.Entities.Halaqa", "Halaqa")
-                        .WithMany()
-                        .HasForeignKey("HalaqaId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Center");
-
-                    b.Navigation("Halaqa");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.TrainingProgram", b =>
                 {
                     b.HasOne("HifzHub.Domain.Entities.Center", "Center")
                         .WithMany()
@@ -436,11 +241,6 @@ namespace HifzHub.Infrastructure.Migrations
             modelBuilder.Entity("HifzHub.Domain.Entities.Center", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.Course", b =>
-                {
-                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("HifzHub.Domain.Entities.User", b =>
