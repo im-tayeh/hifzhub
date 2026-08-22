@@ -9,6 +9,12 @@ public static class DbSeeder
 {
     public static async Task SeedAsync (AppDbContext db, IPasswordHasher hasher)
     {
+        if (!await db.Surahs.AnyAsync())
+        {
+            db.Surahs.AddRange(SurahData.Surahs);
+            await db.SaveChangesAsync();
+        }
+
         if (!await db.Users.AnyAsync(u => u.Username == "imtayeh"))
         {
             var superAdmin = new User

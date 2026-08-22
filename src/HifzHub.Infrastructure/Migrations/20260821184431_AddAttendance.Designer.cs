@@ -3,6 +3,7 @@ using System;
 using HifzHub.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HifzHub.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260821184431_AddAttendance")]
+    partial class AddAttendance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,60 +184,6 @@ namespace HifzHub.Infrastructure.Migrations
                     b.HasIndex("StageId");
 
                     b.ToTable("Halaqat");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.Recitation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CenterId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<int>("FromAyah")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("FromSurah")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Grade")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("HalaqaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Note")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("ToAyah")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ToSurah")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CenterId");
-
-                    b.HasIndex("HalaqaId");
-
-                    b.HasIndex("StudentId", "Date");
-
-                    b.ToTable("Recitations");
                 });
 
             modelBuilder.Entity("HifzHub.Domain.Entities.Stage", b =>
@@ -514,33 +463,6 @@ namespace HifzHub.Infrastructure.Migrations
                     b.Navigation("Center");
 
                     b.Navigation("Stage");
-                });
-
-            modelBuilder.Entity("HifzHub.Domain.Entities.Recitation", b =>
-                {
-                    b.HasOne("HifzHub.Domain.Entities.Center", "Center")
-                        .WithMany()
-                        .HasForeignKey("CenterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HifzHub.Domain.Entities.Halaqa", "Halaqa")
-                        .WithMany()
-                        .HasForeignKey("HalaqaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HifzHub.Domain.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Center");
-
-                    b.Navigation("Halaqa");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("HifzHub.Domain.Entities.Stage", b =>

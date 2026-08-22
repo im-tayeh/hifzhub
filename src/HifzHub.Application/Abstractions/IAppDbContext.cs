@@ -14,6 +14,9 @@ public interface IAppDbContext
     DbSet<TrainingProgram> Programs { get; }
     DbSet<Course> Courses { get; }
     DbSet<CourseEnrollment> CourseEnrollments { get; }
+    DbSet<Surah> Surahs { get; }
+    DbSet<Attendance> Attendances { get; }
+    DbSet<Recitation> Recitations { get; }
 
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

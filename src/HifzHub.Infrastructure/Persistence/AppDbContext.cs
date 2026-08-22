@@ -16,6 +16,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     public DbSet<TrainingProgram> Programs => Set<TrainingProgram>();
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<CourseEnrollment> CourseEnrollments => Set<CourseEnrollment>();
+    public DbSet<Surah> Surahs => Set<Surah>();
+    public DbSet<Attendance> Attendances => Set<Attendance>();
+    public DbSet<Recitation> Recitations => Set<Recitation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -33,11 +36,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
         modelBuilder.Entity<Student>().HasQueryFilter(s =>
             tenant.CenterId == null || s.CenterId == tenant.CenterId);
+
         modelBuilder.Entity<TrainingProgram>().HasQueryFilter(p =>
             tenant.CenterId == null || p.CenterId == tenant.CenterId);
+
         modelBuilder.Entity<Course>().HasQueryFilter(c =>
             tenant.CenterId == null || c.CenterId == tenant.CenterId);
+
         modelBuilder.Entity<CourseEnrollment>().HasQueryFilter(e =>
             tenant.CenterId == null || e.CenterId == tenant.CenterId);
+
+        modelBuilder.Entity<Attendance>().HasQueryFilter(a =>
+            tenant.CenterId == null || a.CenterId == tenant.CenterId);
+
+        modelBuilder.Entity<Recitation>().HasQueryFilter(r =>
+            tenant.CenterId == null || r.CenterId == tenant.CenterId);
     }
 }

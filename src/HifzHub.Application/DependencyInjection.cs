@@ -15,6 +15,8 @@ public static class DependencyInjection
         services.AddScoped<HalaqaService>();
         services.AddScoped<StudentService>();
         services.AddScoped<HifzHub.Application.Programs.ProgramService>();
+        services.AddScoped<HifzHub.Application.Attendances.AttendanceService>();
+        services.AddScoped<HifzHub.Application.Recitations.RecitationService>();
 
         return services;
     }
