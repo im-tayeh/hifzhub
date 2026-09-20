@@ -17,6 +17,7 @@ public interface IAppDbContext
     DbSet<Surah> Surahs { get; }
     DbSet<Attendance> Attendances { get; }
     DbSet<Recitation> Recitations { get; }
+    DbSet<StaffProfile> StaffProfiles { get; }
 
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

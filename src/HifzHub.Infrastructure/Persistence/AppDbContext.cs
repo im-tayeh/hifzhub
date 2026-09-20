@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
     public DbSet<Surah> Surahs => Set<Surah>();
     public DbSet<Attendance> Attendances => Set<Attendance>();
     public DbSet<Recitation> Recitations => Set<Recitation>();
+    public DbSet<StaffProfile> StaffProfiles => Set<StaffProfile>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,5 +52,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options,
 
         modelBuilder.Entity<Recitation>().HasQueryFilter(r =>
             tenant.CenterId == null || r.CenterId == tenant.CenterId);
+
+        modelBuilder.Entity<StaffProfile>().HasQueryFilter(p =>
+            tenant.CenterId == null || p.CenterId == tenant.CenterId);
     }
 }

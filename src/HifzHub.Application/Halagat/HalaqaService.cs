@@ -39,6 +39,10 @@ public class HalaqaService(IAppDbContext db, ITenantContext tenant)
     {
         var h = await db.Halaqat.FirstOrDefaultAsync(x => x.Id == id, ct);
         if (h is null) return false;
+
+        if (!await db.Stages.AnyAsync(s => s.Id == req.StageId, ct))
+            return false;
+
         h.StageId = req.StageId;
         h.Name = req.Name;
         await db.SaveChangesAsync(ct);

@@ -7,7 +7,7 @@ public enum RoleType
     CenterAmir = 3,
     DeputyAmir = 4,
     StageAmir = 5,
-    Hafiz = 6,
+    Muhaffiz = 6,
     Mudarris = 7,
     CommitteeLead = 8,
     CommitteeMember = 9,

@@ -4,6 +4,7 @@ using HifzHub.Infrastructure;
 using HifzHub.Infrastructure.Persistence;
 using Scalar.AspNetCore;
 using HifzHub.Application.Abstractions;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+
+    app.UseSwaggerUI(options =>
+       options.SwaggerEndpoint("/openapi/v1.json", "HifzHub API"));
 }
 
 app.UseAuthentication();

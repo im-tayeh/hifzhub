@@ -13,8 +13,16 @@ public class AttendanceService(IAppDbContext db, ITenantContext tenant)
         var student = await db.Students.FirstOrDefaultAsync(s => s.Id == req.StudentId, ct);
         if (student is null || student.HalaqaId is null) return null;
 
-        var exists = await db.Attendances.AnyAsync(a => a.StudentId == req.StudentId && a.Date == req.Date, ct);
-        if (exists) return null;
+        var existing = await db.Attendances
+            .FirstOrDefaultAsync(a => a.StudentId == req.StudentId && a.Date == req.Date, ct);
+
+        if (existing is not null)
+        {
+            existing.Status = req.Status;
+            existing.Note = req.Note;
+            await db.SaveChangesAsync(ct);
+            return Map(existing);
+        }
 
         var att = new Attendance
         {
@@ -25,7 +33,6 @@ public class AttendanceService(IAppDbContext db, ITenantContext tenant)
             Status = req.Status,
             Note = req.Note
         };
-
         db.Attendances.Add(att);
         await db.SaveChangesAsync(ct);
         return Map(att);
