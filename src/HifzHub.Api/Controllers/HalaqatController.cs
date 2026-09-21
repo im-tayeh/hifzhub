@@ -5,35 +5,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace HifzHub.Api.Controllers;
 
 [Authorize]
-[ApiController]
 [Route("api/[controller]")]
-public class HalaqatController(HalaqaService service) : ControllerBase
+public class HalaqatController(HalaqaService service) : ApiControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(CreateHalaqaRequest req, CancellationToken ct)
-    {
-        var result = await service.CreateAsync(req, ct);
-        return result is null
-            ? BadRequest(new { message = "Invalid stage or missing center context." })
-            : CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
+    public async Task<IActionResult> Create(CreateHalaqaRequest req, CancellationToken ct) =>
+        HandleResult(await service.CreateAsync(req, ct));
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken ct) =>
-        Ok(await service.GetAllAsync(ct));
+    public async Task<IActionResult> GetAll(CancellationToken ct) => Ok(await service.GetAllAsync(ct));
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
-    {
-        var result = await service.GetByIdAsync(id, ct);
-        return result is null ? NotFound() : Ok(result);
-    }
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct) =>
+        HandleResult(await service.GetByIdAsync(id, ct));
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, UpdateHalaqaRequest req, CancellationToken ct) =>
-        await service.UpdateAsync(id, req, ct) ? NoContent() : NotFound();
+        HandleResult(await service.UpdateAsync(id, req, ct));
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct) =>
-        await service.DeleteAsync(id, ct) ? NoContent() : NotFound();
+        HandleResult(await service.DeleteAsync(id, ct));
 }

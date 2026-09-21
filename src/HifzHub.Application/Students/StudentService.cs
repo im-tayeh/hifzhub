@@ -1,4 +1,5 @@
 ﻿using HifzHub.Application.Abstractions;
+using HifzHub.Domain.Common;
 using HifzHub.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,13 +7,12 @@ namespace HifzHub.Application.Students;
 
 public class StudentService(IAppDbContext db, ITenantContext tenant)
 {
-    public async Task<StudentResponse?> CreateAsync(CreateStudentRequest req, CancellationToken ct = default)
+    public async Task<Result<StudentResponse>> CreateAsync(CreateStudentRequest req, CancellationToken ct = default)
     {
-        if (tenant.CenterId is null) return null;
-
-        if (req.HalaqaId is not null &&
-            !await db.Halaqat.AnyAsync(h => h.Id == req.HalaqaId, ct))
-            return null;
+        if (tenant.CenterId is null)
+            return Result<StudentResponse>.Validation("A center context is required.");
+        if (req.HalaqaId is not null && !await db.Halaqat.AnyAsync(h => h.Id == req.HalaqaId, ct))
+            return Result<StudentResponse>.NotFound("Halaqa not found.");
 
         var student = new Student
         {
@@ -26,7 +26,7 @@ public class StudentService(IAppDbContext db, ITenantContext tenant)
         };
         db.Students.Add(student);
         await db.SaveChangesAsync(ct);
-        return Map(student);
+        return Result<StudentResponse>.Success(ToResponse(student));
     }
 
     public async Task<List<StudentResponse>> GetAllAsync(CancellationToken ct = default) =>
@@ -36,42 +36,39 @@ public class StudentService(IAppDbContext db, ITenantContext tenant)
         await db.Students.Where(s => s.HalaqaId == null)
                          .Select(s => ToResponse(s)).ToListAsync(ct);
 
-    public async Task<StudentResponse?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<Result<StudentResponse>> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         var s = await db.Students.FirstOrDefaultAsync(x => x.Id == id, ct);
-        return s is null ? null : Map(s);
+        return s is null ? Result<StudentResponse>.NotFound("Student not found.") : Result<StudentResponse>.Success(ToResponse(s));
     }
 
-    public async Task<bool> AssignHalaqaAsync(Guid id, Guid halaqaId, CancellationToken ct = default)
+    public async Task<Result> AssignHalaqaAsync(Guid id, Guid halaqaId, CancellationToken ct = default)
     {
         var s = await db.Students.FirstOrDefaultAsync(x => x.Id == id, ct);
-        if (s is null) return false;
-        if (!await db.Halaqat.AnyAsync(h => h.Id == halaqaId, ct)) return false;
+        if (s is null) return Result.NotFound("Student not found.");
+        if (!await db.Halaqat.AnyAsync(h => h.Id == halaqaId, ct)) return Result.NotFound("Halaqa not found.");
         s.HalaqaId = halaqaId;
         await db.SaveChangesAsync(ct);
-        return true;
+        return Result.Success();
     }
 
-    public async Task<bool> UpdateAsync(Guid id, UpdateStudentRequest req, CancellationToken ct = default)
+    public async Task<Result> UpdateAsync(Guid id, UpdateStudentRequest req, CancellationToken ct = default)
     {
         var s = await db.Students.FirstOrDefaultAsync(x => x.Id == id, ct);
-        if (s is null) return false;
-        s.FullName = req.FullName;
-        s.NationalId = req.NationalId;
-        s.DateOfBirth = req.DateOfBirth;
-        s.WhatsApp = req.WhatsApp;
-        s.IsOrphan = req.IsOrphan;
+        if (s is null) return Result.NotFound("Student not found.");
+        s.FullName = req.FullName; s.NationalId = req.NationalId; s.DateOfBirth = req.DateOfBirth;
+        s.WhatsApp = req.WhatsApp; s.IsOrphan = req.IsOrphan;
         await db.SaveChangesAsync(ct);
-        return true;
+        return Result.Success();
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
+    public async Task<Result> DeleteAsync(Guid id, CancellationToken ct = default)
     {
         var s = await db.Students.FirstOrDefaultAsync(x => x.Id == id, ct);
-        if (s is null) return false;
+        if (s is null) return Result.NotFound("Student not found.");
         s.IsActive = false;
         await db.SaveChangesAsync(ct);
-        return true;
+        return Result.Success();
     }
 
     private static StudentResponse Map(Student s) => ToResponse(s);

@@ -5,26 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace HifzHub.Api.Controllers;
 
 [Authorize]
-[ApiController]
 [Route("api/[controller]")]
-public class AttendancesController(AttendanceService service) : ControllerBase
+public class AttendancesController(AttendanceService service) : ApiControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Mark(MarkAttendanceRequest req, CancellationToken ct)
-    {
-        var result = await service.MarkAsync(req, ct);
-
-        return result is null
-            ? BadRequest(new { message = "Invalid student, student has no halaqa, or already marked today." })
-            : Ok(result);
-    }
+    public async Task<IActionResult> Mark(MarkAttendanceRequest req, CancellationToken ct) =>
+        HandleResult(await service.MarkAsync(req, ct));
 
     [HttpPost("bulk")]
-    public async Task<IActionResult> MarkBulk(BulkAttendanceRequest req, CancellationToken ct)
-    {
-        var count = await service.MarkBulkAsync(req, ct);
-        return Ok(new { added = count });
-    }
+    public async Task<IActionResult> MarkBulk(BulkAttendanceRequest req, CancellationToken ct) =>
+        Ok(new { added = await service.MarkBulkAsync(req, ct) });
 
     [HttpGet]
     public async Task<IActionResult> GetByHalaqaAndDate([FromQuery] Guid halaqaId, [FromQuery] DateOnly date, CancellationToken ct) =>

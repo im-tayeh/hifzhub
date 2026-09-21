@@ -1,4 +1,5 @@
 ﻿using HifzHub.Application.Abstractions;
+using HifzHub.Domain.Common;
 using HifzHub.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,22 +7,19 @@ namespace HifzHub.Application.Attendances;
 
 public class AttendanceService(IAppDbContext db, ITenantContext tenant)
 {
-    public async Task<AttendanceResponse?> MarkAsync(MarkAttendanceRequest req, CancellationToken ct = default)
+    public async Task<Result<AttendanceResponse>> MarkAsync(MarkAttendanceRequest req, CancellationToken ct = default)
     {
-        if (tenant.CenterId is null) return null;
-
+        if (tenant.CenterId is null) return Result<AttendanceResponse>.Validation("A center context is required.");
         var student = await db.Students.FirstOrDefaultAsync(s => s.Id == req.StudentId, ct);
-        if (student is null || student.HalaqaId is null) return null;
+        if (student is null) return Result<AttendanceResponse>.NotFound("Student not found.");
+        if (student.HalaqaId is null) return Result<AttendanceResponse>.Validation("Student has no halaqa.");
 
-        var existing = await db.Attendances
-            .FirstOrDefaultAsync(a => a.StudentId == req.StudentId && a.Date == req.Date, ct);
-
+        var existing = await db.Attendances.FirstOrDefaultAsync(a => a.StudentId == req.StudentId && a.Date == req.Date, ct);
         if (existing is not null)
         {
-            existing.Status = req.Status;
-            existing.Note = req.Note;
+            existing.Status = req.Status; existing.Note = req.Note;
             await db.SaveChangesAsync(ct);
-            return Map(existing);
+            return Result<AttendanceResponse>.Success(Map(existing));
         }
 
         var att = new Attendance
@@ -35,9 +33,8 @@ public class AttendanceService(IAppDbContext db, ITenantContext tenant)
         };
         db.Attendances.Add(att);
         await db.SaveChangesAsync(ct);
-        return Map(att);
+        return Result<AttendanceResponse>.Success(Map(att));
     }
-
     public async Task<int> MarkBulkAsync(BulkAttendanceRequest req, CancellationToken ct = default)
     {
         if (tenant.CenterId is null) return 0;

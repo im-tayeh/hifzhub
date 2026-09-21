@@ -5,39 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 namespace HifzHub.Api.Controllers;
 
 [Authorize]
-[ApiController]
 [Route("api/[controller]")]
-public class StagesController(StageService service) : ControllerBase
+public class StagesController(StageService service) : ApiControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(CreateStageRequest request, CancellationToken ct)
-    {
-        var result = await service.CreateAsync(request, ct);
-
-        return result is null
-            ? BadRequest(new { message = "A center context is required." })
-            : CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
+    public async Task<IActionResult> Create(CreateStageRequest request, CancellationToken ct) =>
+        HandleResult(await service.CreateAsync(request, ct));
 
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct) =>
         Ok(await service.GetAllAsync(ct));
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
-    {
-        var result = await service.GetByIdAsync(id, ct);
-
-        return result is null
-            ? NotFound()
-            : Ok(result);
-    }
+    public async Task<IActionResult> GetById(Guid id, CancellationToken ct) =>
+        HandleResult(await service.GetByIdAsync(id, ct));
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, UpdateStageRequest req, CancellationToken ct) =>
-    await service.UpdateAsync(id, req, ct) ? NoContent() : NotFound();
+        HandleResult(await service.UpdateAsync(id, req, ct));
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct) =>
-        await service.DeleteAsync(id, ct) ? NoContent() : NotFound();
+        HandleResult(await service.DeleteAsync(id, ct));
 }
