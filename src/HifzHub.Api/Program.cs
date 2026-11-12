@@ -18,7 +18,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-    await DbSeeder.SeedAsync(db, hasher);
+    await DbSeeder.SeedAsync(db, hasher, app.Configuration);
 }
 
 if (app.Environment.IsDevelopment())
