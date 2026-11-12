@@ -17,7 +17,8 @@ public class AttendanceService(IAppDbContext db, ITenantContext tenant)
         var existing = await db.Attendances.FirstOrDefaultAsync(a => a.StudentId == req.StudentId && a.Date == req.Date, ct);
         if (existing is not null)
         {
-            existing.Status = req.Status; existing.Note = req.Note;
+            existing.Status = req.Status; 
+            existing.Note = req.Note;
             await db.SaveChangesAsync(ct);
             return Result<AttendanceResponse>.Success(Map(existing));
         }
