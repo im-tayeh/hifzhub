@@ -13,6 +13,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.Property(s => s.NationalId).HasMaxLength(50);
         builder.Property(s => s.WhatsApp).HasMaxLength(20);
         builder.HasIndex(s => s.CenterId);
+        builder.HasIndex(s => s.HalaqaId);
 
         builder.HasOne(s => s.Center)
                .WithMany()
