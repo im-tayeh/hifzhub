@@ -8,6 +8,7 @@ namespace HifzHub.Api.Controllers;
 [Route("api")]
 public class ProgramsController(ProgramService service) : ApiControllerBase
 {
+    [Authorize(Policy = "CenterManager")]
     [HttpPost("programs")]
     public async Task<IActionResult> CreateProgram(CreateProgramRequest req, CancellationToken ct) =>
         HandleResult(await service.CreateProgramAsync(req, ct));
@@ -15,6 +16,7 @@ public class ProgramsController(ProgramService service) : ApiControllerBase
     [HttpGet("programs")]
     public async Task<IActionResult> GetPrograms(CancellationToken ct) => Ok(await service.GetProgramsAsync(ct));
 
+    [Authorize(Policy = "CenterManager")]
     [HttpPost("courses")]
     public async Task<IActionResult> CreateCourse(CreateCourseRequest req, CancellationToken ct) =>
         HandleResult(await service.CreateCourseAsync(req, ct));
@@ -22,6 +24,7 @@ public class ProgramsController(ProgramService service) : ApiControllerBase
     [HttpGet("courses")]
     public async Task<IActionResult> GetCourses(CancellationToken ct) => Ok(await service.GetCoursesAsync(ct));
 
+    [Authorize(Policy = "CenterManager")]
     [HttpPost("courses/{courseId:guid}/enroll")]
     public async Task<IActionResult> Enroll(Guid courseId, EnrollStudentRequest req, CancellationToken ct) =>
         HandleResult(await service.EnrollAsync(courseId, req.StudentId, ct));

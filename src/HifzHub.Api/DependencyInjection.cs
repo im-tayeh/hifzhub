@@ -1,5 +1,6 @@
 ﻿using HifzHub.Api.Services;
 using HifzHub.Application.Abstractions;
+using HifzHub.Domain.Enums;
 using Microsoft.OpenApi;
 
 
@@ -12,9 +13,19 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddHttpContextAccessor();
-        services.AddScoped<ITenantContext, TenantContext>();
-
         services.AddOpenApi();
+
+        services.AddScoped<ITenantContext, TenantContext>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy("CenterManager", policy =>
+            policy.RequireRole(
+                nameof(RoleType.CenterAdmin),
+                nameof(RoleType.CenterAmir),
+                nameof(RoleType.DeputyAmir)))
+            .AddPolicy("SuperAdmin", policy =>
+            policy.RequireRole(nameof(RoleType.SuperAdmin)));
 
         return services;
     }

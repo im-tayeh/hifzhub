@@ -8,6 +8,7 @@ namespace HifzHub.Api.Controllers;
 [Route("api/[controller]")]
 public class StagesController(StageService service) : ApiControllerBase
 {
+    [Authorize(Policy = "CenterManager")]
     [HttpPost]
     public async Task<IActionResult> Create(CreateStageRequest request, CancellationToken ct) =>
         HandleResult(await service.CreateAsync(request, ct));
@@ -20,10 +21,12 @@ public class StagesController(StageService service) : ApiControllerBase
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct) =>
         HandleResult(await service.GetByIdAsync(id, ct));
 
+    [Authorize(Policy = "CenterManager")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, UpdateStageRequest req, CancellationToken ct) =>
         HandleResult(await service.UpdateAsync(id, req, ct));
 
+    [Authorize(Policy = "CenterManager")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct) =>
         HandleResult(await service.DeleteAsync(id, ct));
