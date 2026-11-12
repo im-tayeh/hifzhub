@@ -3,7 +3,7 @@ using HifzHub.Domain.Enums;
 
 namespace HifzHub.Domain.Entities;
 
-public class Attendance : BaseEntity
+public class Attendance : BaseEntity, ITenantOwned
 {
     public Guid CenterId { get; set; }
     public Center Center { get; set; } = null!;

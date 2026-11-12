@@ -2,7 +2,7 @@
 
 namespace HifzHub.Domain.Entities;
 
-public class Halaqa : BaseEntity
+public class Halaqa : BaseEntity, ITenantOwned
 {
     public Guid CenterId { get; set; }
     public Center Center { get; set; } = null!;

@@ -2,7 +2,7 @@
 
 namespace HifzHub.Domain.Entities;
 
-public class CourseEnrollment : BaseEntity
+public class CourseEnrollment : BaseEntity, ITenantOwned
 {
     public Guid CenterId { get; set; }
 

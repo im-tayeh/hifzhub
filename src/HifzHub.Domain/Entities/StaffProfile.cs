@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HifzHub.Domain.Entities;
 
-public class StaffProfile : BaseEntity
+public class StaffProfile : BaseEntity, ITenantOwned
 {
     public Guid CenterId { get; set; }
     public Center Center { get; set; } = null!;

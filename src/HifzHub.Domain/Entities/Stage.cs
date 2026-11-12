@@ -2,7 +2,7 @@
 
 namespace HifzHub.Domain.Entities;
 
-public class Stage : BaseEntity
+public class Stage : BaseEntity, ITenantOwned
 {
     public Guid CenterId { get; set; }
     public Center Center { get; set; } = null!;
